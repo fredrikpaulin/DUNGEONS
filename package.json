@@ -1,5 +1,5 @@
 {
-  "name": "DUNGEONS",
+  "name": "dungeons",
   "module": "index.js",
   "description": "A networked MUD system for kids aged 6-12. Players explore mystery adventures together via TUI clients connected to a Bun WebSocket server — gathering clues, questioning NPCs, and solving whodunits. Includes an MCP server for AI-assisted adventure authoring and a universe system for shared creative guidelines.",
   "type": "module",
