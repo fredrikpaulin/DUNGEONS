@@ -1,0 +1,1083 @@
+{
+  "meta": {
+    "title": "The Haunted Manor Mystery",
+    "author": "Fredrik",
+    "version": "0.1.0",
+    "language": "en",
+    "playerCount": {
+      "min": 1,
+      "max": 4
+    },
+    "description": "Something precious has gone missing from Grimsworth Manor! Explore the creaky old house, talk to its eccentric residents, and gather clues to figure out who took it — and where they hid it.",
+    "universe": "haunted-manor"
+  },
+  "config": {
+    "tracks": [
+      {
+        "id": "time",
+        "name": "Time",
+        "start": 8,
+        "min": 0,
+        "max": 10,
+        "direction": "down",
+        "triggerAt": 0,
+        "triggerEffects": [
+          {
+            "type": "narrative",
+            "text": "Time has run out!"
+          }
+        ]
+      }
+    ],
+    "tokens": [
+      {
+        "id": "courage",
+        "name": "Courage",
+        "pool": 5,
+        "startPerPlayer": 1
+      }
+    ],
+    "stats": [
+      {
+        "id": "str",
+        "name": "Strength",
+        "min": 0,
+        "max": 3
+      },
+      {
+        "id": "per",
+        "name": "Perception",
+        "min": 0,
+        "max": 3
+      },
+      {
+        "id": "cha",
+        "name": "Charm",
+        "min": 0,
+        "max": 3
+      },
+      {
+        "id": "cun",
+        "name": "Cunning",
+        "min": 0,
+        "max": 3
+      }
+    ],
+    "approaches": [
+      {
+        "id": "brave",
+        "name": "Brave",
+        "effects": [
+          {
+            "type": "token",
+            "token": "courage",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "careful",
+        "name": "Careful",
+        "effects": []
+      },
+      {
+        "id": "wild",
+        "name": "Wild",
+        "effects": [
+          {
+            "type": "token",
+            "token": "courage",
+            "delta": 1
+          }
+        ],
+        "requiresComplication": true
+      }
+    ],
+    "startRoom": "hub",
+    "verbMenu": [
+      "LOOK",
+      "TALK",
+      "USE",
+      "TAKE",
+      "PUSH"
+    ],
+    "lobby": {
+      "minPlayers": 1,
+      "maxPlayers": 4,
+      "roleSelection": "pick",
+      "autoStart": false
+    }
+  },
+  "strings": {
+    "choose_prompt": "Choose [1-{n}]:",
+    "also_here": "Also here:",
+    "press_any_key": "Press any key...",
+    "items_label": "Items:",
+    "conditions_label": "Conditions:"
+  },
+  "roles": [
+    {
+      "id": "explorer",
+      "name": "Explorer",
+      "description": "Good at finding things",
+      "tricks": [
+        {
+          "id": "scout",
+          "name": "Scout Ahead",
+          "description": "Peek into next room",
+          "trigger": "enter_room",
+          "uses": "once_per_dungeon",
+          "effects": [
+            {
+              "type": "narrative",
+              "text": "You scout ahead and spot something."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thinker",
+      "name": "Thinker",
+      "description": "Good at puzzles",
+      "tricks": [
+        {
+          "id": "analyze",
+          "name": "Analyze",
+          "description": "Study the room",
+          "trigger": "manual",
+          "uses": "once_per_room",
+          "effects": [
+            {
+              "type": "token",
+              "token": "courage",
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "helper",
+      "name": "Helper",
+      "description": "Good at teamwork",
+      "tricks": [
+        {
+          "id": "encourage",
+          "name": "Encourage",
+          "description": "Boost a friend",
+          "trigger": "manual",
+          "uses": "once_per_room",
+          "effects": [
+            {
+              "type": "token",
+              "token": "courage",
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sneaker",
+      "name": "Sneaker",
+      "description": "Good at stealth",
+      "tricks": [
+        {
+          "id": "sneak",
+          "name": "Sneak Past",
+          "description": "Avoid trouble",
+          "trigger": "manual",
+          "uses": "once_per_room",
+          "effects": [
+            {
+              "type": "track",
+              "track": "time",
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "spooked",
+      "name": "Spooked",
+      "statModifier": {
+        "stat": "per",
+        "delta": -1
+      },
+      "curedBy": [
+        "candle"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "candle",
+      "name": "Flickering Candle",
+      "description": "A small candle that never seems to go out. It lights up dark corners.",
+      "tags": [
+        "light"
+      ],
+      "useEffects": [
+        {
+          "type": "narrative",
+          "text": "The candle flickers and reveals details hidden in the shadows."
+        }
+      ]
+    },
+    {
+      "id": "magnifier",
+      "name": "Old Magnifying Glass",
+      "description": "A brass magnifying glass. Great for spotting tiny details.",
+      "tags": [
+        "tool"
+      ],
+      "useEffects": [
+        {
+          "type": "narrative",
+          "text": "You peer through the magnifying glass and notice something you missed before."
+        }
+      ]
+    },
+    {
+      "id": "brass_key",
+      "name": "Small Brass Key",
+      "description": "A tiny brass key with an ornate handle. It must unlock something important.",
+      "tags": [
+        "key"
+      ],
+      "useEffects": [
+        {
+          "type": "narrative",
+          "text": "You try the key. It fits! Click."
+        }
+      ]
+    }
+  ],
+  "clues": {
+    "core": [
+      {
+        "id": "polish_stain",
+        "text": "A smear of silver polish on the doorknob — only Mr. Graves uses silver polish.",
+        "pointsTo": {
+          "suspect": "butler"
+        }
+      },
+      {
+        "id": "butler_schedule",
+        "text": "A torn page from Mr. Graves' schedule. He wasn't where he said he was last night.",
+        "pointsTo": {
+          "suspect": "butler"
+        }
+      },
+      {
+        "id": "muddy_boots",
+        "text": "Muddy boot prints that match Rosie's gardening boots lead away from the scene.",
+        "pointsTo": {
+          "suspect": "gardener"
+        }
+      },
+      {
+        "id": "blue_petal",
+        "text": "A blue orchid petal found near the crime scene. Only Rosie grows these rare flowers.",
+        "pointsTo": {
+          "suspect": "gardener"
+        }
+      },
+      {
+        "id": "ink_smudge",
+        "text": "A smudge of special purple ink — the same kind Professor Inkwell uses for her notes.",
+        "pointsTo": {
+          "suspect": "professor"
+        }
+      },
+      {
+        "id": "torn_page",
+        "text": "A torn page from a rare book about the manor's secret passages. Professor Inkwell is the only one who reads these.",
+        "pointsTo": {
+          "suspect": "professor"
+        }
+      },
+      {
+        "id": "cobweb_thread",
+        "text": "A strand of thick cobweb stuck to the stolen item's display case. The attic is full of cobwebs like this.",
+        "pointsTo": {
+          "location": "attic"
+        }
+      },
+      {
+        "id": "damp_cloth",
+        "text": "A damp cloth that smells of mildew. It must have come from somewhere underground — like the cellar.",
+        "pointsTo": {
+          "location": "cellar"
+        }
+      },
+      {
+        "id": "leaf_trail",
+        "text": "A trail of crushed tropical leaves leads away from the display case. These only grow in the greenhouse.",
+        "pointsTo": {
+          "location": "greenhouse"
+        }
+      }
+    ],
+    "bonus": [
+      {
+        "id": "bonus_scratch",
+        "text": "Scratch marks on the floor suggest something heavy was dragged in a hurry.",
+        "pointsTo": {}
+      },
+      {
+        "id": "bonus_clock",
+        "text": "The grandfather clock in the foyer stopped at 11:47 PM — right around the time the music box disappeared.",
+        "pointsTo": {}
+      },
+      {
+        "id": "bonus_whisper",
+        "text": "If you listen carefully near the walls, you can hear a faint melody — the music box is still playing somewhere in the manor!",
+        "pointsTo": {}
+      }
+    ]
+  },
+  "npcs": [
+    {
+      "id": "butler",
+      "name": "Mr. Graves the Butler",
+      "role": "suspect",
+      "scenes": {
+        "hub": {
+          "1": {
+            "narrative": "Mr. Graves stands stiffly by the staircase, polishing a candlestick. 'Good evening. I trust you'll find everything in order.' He doesn't smile."
+          },
+          "2": {
+            "narrative": "Mr. Graves sighs. 'Another visitor poking around. I've served this family for thirty years, you know. I would never do anything to harm this house.'"
+          },
+          "3": {
+            "narrative": "'Still here? Very well. I did hear something strange last night — footsteps near the kitchen. But I was polishing the silver, as I always do.'"
+          }
+        }
+      },
+      "reactions": {
+        "accused": "Mr. Graves raises an eyebrow. 'Me? How dare you. I have given my life to this manor!'",
+        "cleared": "Mr. Graves nods stiffly. 'As I expected. Thank you for your... thoroughness.'"
+      },
+      "guiltyVariant": {
+        "narrative": "Mr. Graves avoids eye contact and keeps glancing toward the door. His hands tremble slightly as he polishes."
+      },
+      "innocentVariant": {
+        "narrative": "Mr. Graves stands tall and dignified, every button perfectly fastened."
+      }
+    },
+    {
+      "id": "gardener",
+      "name": "Rosie the Gardener",
+      "role": "suspect",
+      "scenes": {
+        "hub": {
+          "1": {
+            "narrative": "A cheerful woman in muddy boots waves from behind a potted fern. 'Oh hello! I'm Rosie. I look after the garden — well, I try to. The plants have a mind of their own in this place!'"
+          },
+          "2": {
+            "narrative": "Rosie wipes her hands on her apron. 'I was in the greenhouse all evening, tending my blue orchids. They only bloom under moonlight, you see.'"
+          },
+          "3": {
+            "narrative": "Rosie leans in and whispers. 'Between you and me, I heard Mr. Graves arguing with someone near the cellar last night. Very unusual for him.'"
+          }
+        }
+      },
+      "reactions": {
+        "accused": "Rosie gasps. 'Me?! But I love this manor! My plants are the only family I have!'",
+        "cleared": "Rosie beams. 'I knew you'd figure it out! Would you like to see my blue orchids? They're quite special.'"
+      },
+      "guiltyVariant": {
+        "narrative": "Rosie keeps fiddling with a loose thread on her glove. There's fresh mud on her boots that doesn't match the garden soil."
+      },
+      "innocentVariant": {
+        "narrative": "Rosie hums a little tune as she waters the fern, perfectly relaxed."
+      }
+    },
+    {
+      "id": "professor",
+      "name": "Professor Inkwell",
+      "role": "suspect",
+      "scenes": {
+        "hub": {
+          "1": {
+            "narrative": "A wild-haired woman peers at you over her spectacles from behind a stack of books. 'Ah! A detective! Wonderful. I'm Professor Inkwell — I study the history of this manor. Fascinating place. Absolutely fascinating.'"
+          },
+          "2": {
+            "narrative": "The Professor taps a thick book excitedly. 'Did you know this manor was built over an old tunnel system? The original owner was quite the adventurer.'"
+          },
+          "3": {
+            "narrative": "Professor Inkwell adjusts her spectacles nervously. 'I may have... borrowed a few books from the library for my research. But I always return them! Eventually.'"
+          }
+        }
+      },
+      "reactions": {
+        "accused": "Professor Inkwell drops her book in shock. 'Preposterous! I'm a scholar, not a thief! My only crime is overdue library books!'",
+        "cleared": "The Professor nods thoughtfully. 'A logical conclusion. Well done — you have a keen mind for mystery.'"
+      },
+      "guiltyVariant": {
+        "narrative": "Professor Inkwell keeps reorganizing her papers, hiding certain pages whenever you look her way."
+      },
+      "innocentVariant": {
+        "narrative": "Professor Inkwell is completely absorbed in her research, muttering happily about architectural history."
+      }
+    }
+  ],
+  "rooms": {
+    "hub": {
+      "id": "hub",
+      "name": "Grand Foyer",
+      "zone": "hub",
+      "tags": [
+        "hub",
+        "safe"
+      ],
+      "narrative": "The front door creaks shut behind you. You stand in the Grand Foyer of Grimsworth Manor. Dusty chandeliers hang from the ceiling, and faded portraits line the walls. Three hallways branch off into darkness.",
+      "exits": [
+        {
+          "target": "library",
+          "label": "Enter the library"
+        },
+        {
+          "target": "kitchen",
+          "label": "Go to the kitchen"
+        },
+        {
+          "target": "garden",
+          "label": "Step into the garden"
+        }
+      ],
+      "choices": [
+        {
+          "id": "hub_portraits",
+          "label": "Study the portraits",
+          "verb": "LOOK",
+          "narrative": "The portraits show generations of the Grimsworth family. Their painted eyes seem to follow you as you look at each one.",
+          "requires": null,
+          "target": "hub",
+          "effects": []
+        },
+        {
+          "id": "hub_rest",
+          "label": "Rest on the dusty sofa",
+          "verb": "USE",
+          "narrative": "You sink into the old velvet sofa. A cloud of dust puffs up, but you feel a little better.",
+          "requires": null,
+          "target": "hub",
+          "effects": [
+            {
+              "type": "rest"
+            }
+          ]
+        }
+      ],
+      "onEnter": [],
+      "clue": null,
+      "items": null
+    },
+    "library": {
+      "id": "library",
+      "name": "The Dusty Library",
+      "zone": "dungeon_a",
+      "tags": [
+        "indoor",
+        "quiet"
+      ],
+      "narrative": "Towering bookshelves stretch to the ceiling. Some books are stacked in messy piles on the floor. A reading lamp flickers on and off by itself.",
+      "exits": [
+        {
+          "target": "hub",
+          "label": "Return to the foyer"
+        },
+        {
+          "target": "attic",
+          "label": "Climb the hidden staircase"
+        }
+      ],
+      "choices": [
+        {
+          "id": "lib_search",
+          "label": "Search the bookshelves",
+          "verb": "LOOK",
+          "narrative": "You run your fingers along the dusty spines. One book feels different — it's hollow inside!",
+          "requires": null,
+          "target": "library",
+          "effects": []
+        },
+        {
+          "id": "lib_lamp",
+          "label": "Examine the flickering lamp",
+          "verb": "USE",
+          "narrative": "You tap the lamp and it steadies. In the new light, you notice scratches on the desk — like something was dragged across it.",
+          "requires": null,
+          "target": "library",
+          "effects": [
+            {
+              "type": "narrative",
+              "text": "The lamp hums softly now."
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "narrative",
+          "text": "The floorboards groan under your feet."
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Search carefully among the books."
+      },
+      "items": null
+    },
+    "kitchen": {
+      "id": "kitchen",
+      "name": "The Old Kitchen",
+      "zone": "dungeon_b",
+      "tags": [
+        "indoor",
+        "messy"
+      ],
+      "narrative": "Pots and pans hang from hooks on the ceiling. A large iron stove sits cold and dark in the corner. Something smells like burnt toast — but nobody has cooked here in years.",
+      "exits": [
+        {
+          "target": "hub",
+          "label": "Return to the foyer"
+        },
+        {
+          "target": "cellar",
+          "label": "Go down the cellar stairs"
+        }
+      ],
+      "choices": [
+        {
+          "id": "kit_stove",
+          "label": "Check the stove",
+          "verb": "LOOK",
+          "narrative": "The stove is cold, but inside you find a crumpled note with strange writing on it.",
+          "requires": null,
+          "target": "kitchen",
+          "effects": []
+        },
+        {
+          "id": "kit_pantry",
+          "label": "Rummage through the pantry",
+          "verb": "TAKE",
+          "narrative": "Most of the food is ancient and dusty. But tucked behind a jar of pickles, you find something interesting.",
+          "requires": null,
+          "target": "kitchen",
+          "effects": []
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "narrative",
+          "text": "A pan swings gently on its hook, as if someone just bumped it."
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Look around for anything out of place."
+      },
+      "items": {
+        "guaranteed": null,
+        "draw": 1
+      }
+    },
+    "garden": {
+      "id": "garden",
+      "name": "The Overgrown Garden",
+      "zone": "dungeon_c",
+      "tags": [
+        "outdoor",
+        "nature"
+      ],
+      "narrative": "Wild roses and ivy have taken over everything. A stone fountain stands in the center, its water long dried up. Fireflies blink lazily in the evening air.",
+      "exits": [
+        {
+          "target": "hub",
+          "label": "Go back inside"
+        },
+        {
+          "target": "greenhouse",
+          "label": "Push through the vines to the greenhouse"
+        }
+      ],
+      "choices": [
+        {
+          "id": "grd_fountain",
+          "label": "Examine the fountain",
+          "verb": "LOOK",
+          "narrative": "The fountain has carvings of fish and mermaids. At the bottom, you spot something shiny wedged between the stones.",
+          "requires": null,
+          "target": "garden",
+          "effects": []
+        },
+        {
+          "id": "grd_dig",
+          "label": "Dig near the rose bushes",
+          "verb": "USE",
+          "narrative": "The soil is soft here, as if it was recently turned. You dig a little and find a muddy footprint pressed into the earth.",
+          "requires": null,
+          "target": "garden",
+          "effects": []
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "narrative",
+          "text": "A cool breeze carries the scent of old roses."
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Look for signs that someone has been here recently."
+      },
+      "items": null
+    },
+    "attic": {
+      "id": "attic",
+      "name": "The Creaky Attic",
+      "zone": "dungeon_a",
+      "tags": [
+        "indoor",
+        "dark",
+        "high"
+      ],
+      "narrative": "Cobwebs drape across old trunks and broken furniture. A round window lets in a sliver of moonlight. You hear something skittering in the shadows — probably just a mouse.",
+      "exits": [
+        {
+          "target": "library",
+          "label": "Climb back down to the library"
+        }
+      ],
+      "choices": [
+        {
+          "id": "att_trunk",
+          "label": "Open an old trunk",
+          "verb": "USE",
+          "narrative": "The trunk is full of moth-eaten clothes and a dusty photo album. One photo has been torn out — recently, by the look of it.",
+          "requires": null,
+          "target": "attic",
+          "effects": []
+        },
+        {
+          "id": "att_window",
+          "label": "Look out the round window",
+          "verb": "LOOK",
+          "narrative": "From up here you can see the whole garden. You notice a trail of broken branches leading to the greenhouse.",
+          "requires": null,
+          "target": "attic",
+          "effects": [
+            {
+              "type": "narrative",
+              "text": "Interesting — someone went through the garden in a hurry."
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -1
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Search through the old belongings."
+      },
+      "items": {
+        "guaranteed": null,
+        "draw": 1
+      }
+    },
+    "cellar": {
+      "id": "cellar",
+      "name": "The Dark Cellar",
+      "zone": "dungeon_b",
+      "tags": [
+        "indoor",
+        "dark",
+        "underground"
+      ],
+      "narrative": "Stone steps lead into a cold, damp cellar. Old wine barrels line the walls. Water drips somewhere in the darkness, echoing off the stone.",
+      "exits": [
+        {
+          "target": "kitchen",
+          "label": "Go back up to the kitchen"
+        }
+      ],
+      "choices": [
+        {
+          "id": "cel_barrels",
+          "label": "Check behind the barrels",
+          "verb": "LOOK",
+          "narrative": "Behind the biggest barrel, you find a narrow passage scratched into the stone wall. It looks like someone has been using it.",
+          "requires": null,
+          "target": "cellar",
+          "effects": []
+        },
+        {
+          "id": "cel_puddle",
+          "label": "Examine the water puddle",
+          "verb": "LOOK",
+          "narrative": "The water isn't dripping from the ceiling — it's seeping from under a loose stone in the floor. Something is hidden beneath!",
+          "requires": null,
+          "target": "cellar",
+          "effects": []
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -1
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Search the damp corners carefully."
+      },
+      "items": {
+        "guaranteed": null,
+        "draw": 1
+      }
+    },
+    "greenhouse": {
+      "id": "greenhouse",
+      "name": "The Foggy Greenhouse",
+      "zone": "dungeon_c",
+      "tags": [
+        "indoor",
+        "nature",
+        "humid"
+      ],
+      "narrative": "Warm, misty air fills the old greenhouse. Strange plants grow in cracked pots, and vines crawl up the foggy glass walls. It feels like the plants are watching you.",
+      "exits": [
+        {
+          "target": "garden",
+          "label": "Push back through the vines to the garden"
+        }
+      ],
+      "choices": [
+        {
+          "id": "gh_plants",
+          "label": "Investigate the strange plants",
+          "verb": "LOOK",
+          "narrative": "One plant has unusual blue flowers you've never seen before. Underneath its pot, someone scratched a symbol into the wooden shelf.",
+          "requires": null,
+          "target": "greenhouse",
+          "effects": []
+        },
+        {
+          "id": "gh_toolbox",
+          "label": "Open the rusty toolbox",
+          "verb": "USE",
+          "narrative": "The toolbox is mostly empty, but at the bottom you find a small brass key wrapped in a cloth.",
+          "requires": null,
+          "target": "greenhouse",
+          "effects": []
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -1
+        }
+      ],
+      "clue": {
+        "type": "core",
+        "pool": [],
+        "instruction": "Something is hidden among the plants."
+      },
+      "items": null
+    }
+  },
+  "complications": [
+    {
+      "id": 1,
+      "name": "Creaky Floorboard",
+      "size": "small",
+      "narrative": "CREAK! You step on a loose floorboard and it groans loudly. Everyone in the manor probably heard that!",
+      "effects": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Spooky Draft",
+      "size": "small",
+      "narrative": "A sudden cold draft blows through the room! Your candle flickers and papers scatter everywhere.",
+      "effects": [
+        {
+          "type": "narrative",
+          "text": "Brrr! That was chilly."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Locked Door",
+      "size": "large",
+      "narrative": "The door slams shut behind you and won't budge! You have to find another way around, wasting precious time.",
+      "effects": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -2
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Startled Cat",
+      "size": "small",
+      "narrative": "A black cat leaps out from behind a curtain! MREOW! You stumble backward in surprise, knocking over a vase. Oops.",
+      "effects": [
+        {
+          "type": "token",
+          "token": "courage",
+          "delta": -1
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Lights Out",
+      "size": "large",
+      "narrative": "All the lights in the manor go dark at once! You fumble around in the pitch black until they flicker back on. What just happened?",
+      "effects": [
+        {
+          "type": "track",
+          "track": "time",
+          "delta": -2
+        },
+        {
+          "type": "narrative",
+          "text": "Your heart is pounding."
+        }
+      ]
+    }
+  ],
+  "epilogues": {
+    "win": {
+      "id": "win",
+      "type": "win",
+      "narrative": "You solved the mystery!"
+    },
+    "loss": {
+      "id": "loss",
+      "type": "loss",
+      "narrative": "The grandfather clock strikes midnight and the manor falls silent. You ran out of time before solving the mystery. Lady Grimsworth's golden music box is still missing somewhere in the old house, its melody fading. Perhaps next time you'll crack the case! The suspects exchange glances as you leave through the creaky front door..."
+    },
+    "win_butler_attic": {
+      "id": "win_butler_attic",
+      "type": "win",
+      "culprit": "butler",
+      "hideout": "attic",
+      "narrative": "You climb to the attic and find Lady Grimsworth's golden music box hidden inside an old trunk — wrapped in one of Mr. Graves' polishing cloths! The butler hangs his head. 'I only wanted to hear it play one more time,' he whispers. 'It reminds me of when Lady Grimsworth was young.' The music box is returned, and Mr. Graves promises never to take it again."
+    },
+    "win_butler_cellar": {
+      "id": "win_butler_cellar",
+      "type": "win",
+      "culprit": "butler",
+      "hideout": "cellar",
+      "narrative": "Deep in the cellar, behind the largest wine barrel, you find the golden music box wrapped in a damp cloth. Mr. Graves sighs deeply. 'I was going to return it. I just wanted to clean it properly — it deserved better care.' The music box gleams in the candlelight, polished to perfection."
+    },
+    "win_butler_greenhouse": {
+      "id": "win_butler_greenhouse",
+      "type": "win",
+      "culprit": "butler",
+      "hideout": "greenhouse",
+      "narrative": "Hidden under a potting bench in the greenhouse, you discover the golden music box. Mr. Graves clears his throat. 'I thought no one would look among the plants. I only took it because it was tarnishing in that drafty foyer.' He polishes it one last time before handing it back."
+    },
+    "win_gardener_attic": {
+      "id": "win_gardener_attic",
+      "type": "win",
+      "culprit": "gardener",
+      "hideout": "attic",
+      "narrative": "In the dusty attic, tucked inside a hatbox, the golden music box sits on a bed of blue orchid petals. Rosie's eyes fill with tears. 'It plays the most beautiful melody — my flowers grow better when they hear music. I was going to bring it back, I promise!' She returns the music box with a handful of flowers as an apology."
+    },
+    "win_gardener_cellar": {
+      "id": "win_gardener_cellar",
+      "type": "win",
+      "culprit": "gardener",
+      "hideout": "cellar",
+      "narrative": "Under a loose stone in the cellar floor, you find the golden music box nestled in a wooden crate lined with moss. Rosie shuffles her muddy boots. 'The cellar has the best echo — the music sounds magical down here. I just wanted my plants to hear it.' She carefully hands it back, humming the tune."
+    },
+    "win_gardener_greenhouse": {
+      "id": "win_gardener_greenhouse",
+      "type": "win",
+      "culprit": "gardener",
+      "hideout": "greenhouse",
+      "narrative": "There it is — the golden music box, sitting among the blue orchids in the greenhouse, still softly playing its melody. The flowers around it seem to sway to the music. Rosie wipes her eyes. 'See? They love it. The orchids bloomed three times as fast!' She gently picks it up and returns it. 'Maybe Lady Grimsworth would let me borrow it sometimes?'"
+    },
+    "win_professor_attic": {
+      "id": "win_professor_attic",
+      "type": "win",
+      "culprit": "professor",
+      "hideout": "attic",
+      "narrative": "In the attic, buried under a pile of research papers, you find the golden music box. Professor Inkwell pushes her spectacles up nervously. 'It has an inscription on the bottom — in Old English! I needed to study it for my book. I was going to return it after I finished my chapter, truly!' She hands it back along with a hand-drawn copy of the inscription."
+    },
+    "win_professor_cellar": {
+      "id": "win_professor_cellar",
+      "type": "win",
+      "culprit": "professor",
+      "hideout": "cellar",
+      "narrative": "Behind the wine barrels in the cellar, you find the golden music box sitting on top of a stack of Professor Inkwell's notebooks. She gasps. 'I discovered that the music box mechanism contains a hidden map of the original tunnel system! I brought it down here to compare it to the cellar walls.' She reluctantly returns it. 'Could I at least take a few more sketches?'"
+    },
+    "win_professor_greenhouse": {
+      "id": "win_professor_greenhouse",
+      "type": "win",
+      "culprit": "professor",
+      "hideout": "greenhouse",
+      "narrative": "In the misty greenhouse, the golden music box sits on a workbench surrounded by magnifying lenses and notes. Professor Inkwell adjusts her spectacles. 'The greenhouse has the best light for studying the engravings! Did you know the music box was crafted by a famous clockmaker in 1847?' She lovingly returns it. 'What a remarkable artifact.'"
+    }
+  },
+  "secrets": {
+    "combinations": [
+      {
+        "culprit": "butler",
+        "hideout": "attic",
+        "clueAssignments": {
+          "library": "polish_stain",
+          "kitchen": "butler_schedule",
+          "garden": "cobweb_thread",
+          "attic": "damp_cloth",
+          "cellar": "muddy_boots",
+          "greenhouse": "ink_smudge"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_butler_attic"
+      },
+      {
+        "culprit": "butler",
+        "hideout": "cellar",
+        "clueAssignments": {
+          "library": "butler_schedule",
+          "kitchen": "damp_cloth",
+          "garden": "polish_stain",
+          "attic": "cobweb_thread",
+          "cellar": "blue_petal",
+          "greenhouse": "torn_page"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_butler_cellar"
+      },
+      {
+        "culprit": "butler",
+        "hideout": "greenhouse",
+        "clueAssignments": {
+          "library": "polish_stain",
+          "kitchen": "ink_smudge",
+          "garden": "leaf_trail",
+          "attic": "butler_schedule",
+          "cellar": "muddy_boots",
+          "greenhouse": "cobweb_thread"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_butler_greenhouse"
+      },
+      {
+        "culprit": "gardener",
+        "hideout": "attic",
+        "clueAssignments": {
+          "library": "torn_page",
+          "kitchen": "muddy_boots",
+          "garden": "blue_petal",
+          "attic": "cobweb_thread",
+          "cellar": "polish_stain",
+          "greenhouse": "ink_smudge"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_gardener_attic"
+      },
+      {
+        "culprit": "gardener",
+        "hideout": "cellar",
+        "clueAssignments": {
+          "library": "ink_smudge",
+          "kitchen": "damp_cloth",
+          "garden": "muddy_boots",
+          "attic": "butler_schedule",
+          "cellar": "blue_petal",
+          "greenhouse": "torn_page"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_gardener_cellar"
+      },
+      {
+        "culprit": "gardener",
+        "hideout": "greenhouse",
+        "clueAssignments": {
+          "library": "polish_stain",
+          "kitchen": "blue_petal",
+          "garden": "leaf_trail",
+          "attic": "torn_page",
+          "cellar": "butler_schedule",
+          "greenhouse": "muddy_boots"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_gardener_greenhouse"
+      },
+      {
+        "culprit": "professor",
+        "hideout": "attic",
+        "clueAssignments": {
+          "library": "torn_page",
+          "kitchen": "muddy_boots",
+          "garden": "cobweb_thread",
+          "attic": "ink_smudge",
+          "cellar": "polish_stain",
+          "greenhouse": "blue_petal"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_professor_attic"
+      },
+      {
+        "culprit": "professor",
+        "hideout": "cellar",
+        "clueAssignments": {
+          "library": "ink_smudge",
+          "kitchen": "damp_cloth",
+          "garden": "blue_petal",
+          "attic": "butler_schedule",
+          "cellar": "torn_page",
+          "greenhouse": "muddy_boots"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_professor_cellar"
+      },
+      {
+        "culprit": "professor",
+        "hideout": "greenhouse",
+        "clueAssignments": {
+          "library": "torn_page",
+          "kitchen": "polish_stain",
+          "garden": "leaf_trail",
+          "attic": "muddy_boots",
+          "cellar": "butler_schedule",
+          "greenhouse": "ink_smudge"
+        },
+        "roomOverrides": {},
+        "epilogue": "win_professor_greenhouse"
+      }
+    ]
+  }
+}

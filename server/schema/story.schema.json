@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dungeons.dev/story.schema.json",
+  "title": "DUNGEONS Story Format",
+  "description": "Schema for a playable DUNGEONS adventure",
+  "type": "object",
+  "required": ["meta", "config", "rooms"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "config": { "$ref": "#/$defs/config" },
+    "strings": {
+      "type": "object",
+      "description": "UI strings for localization",
+      "additionalProperties": { "type": "string" }
+    },
+    "roles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/role" }
+    },
+    "conditions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/condition" }
+    },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "clues": { "$ref": "#/$defs/clues" },
+    "npcs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/npc" }
+    },
+    "rooms": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/room" }
+    },
+    "complications": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/complication" }
+    },
+    "epilogues": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/epilogue" }
+    },
+    "secrets": { "$ref": "#/$defs/secrets" }
+  },
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "required": ["title", "version"],
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "version": { "type": "string" },
+        "language": { "type": "string", "default": "en" },
+        "playerCount": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "integer", "minimum": 1 },
+            "max": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "description": { "type": "string" },
+        "universe": { "type": "string" }
+      }
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "tracks": { "type": "array", "items": { "$ref": "#/$defs/trackDef" } },
+        "tokens": { "type": "array", "items": { "$ref": "#/$defs/tokenDef" } },
+        "stats": { "type": "array", "items": { "$ref": "#/$defs/statDef" } },
+        "approaches": { "type": "array", "items": { "$ref": "#/$defs/approachDef" } },
+        "startRoom": { "type": "string" },
+        "verbMenu": { "type": "array", "items": { "type": "string" } },
+        "lobby": { "$ref": "#/$defs/lobbyConfig" }
+      }
+    },
+    "lobbyConfig": {
+      "type": "object",
+      "properties": {
+        "minPlayers": { "type": "integer", "minimum": 1, "default": 1 },
+        "maxPlayers": { "type": "integer", "minimum": 1, "default": 10 },
+        "roleSelection": { "type": "string", "enum": ["pick", "random", "assign"], "default": "pick" },
+        "autoStart": { "type": "boolean", "default": false }
+      }
+    },
+    "trackDef": {
+      "type": "object",
+      "required": ["id", "start", "min", "max", "direction"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "start": { "type": "integer" },
+        "min": { "type": "integer" },
+        "max": { "type": "integer" },
+        "direction": { "enum": ["up", "down"] },
+        "triggerAt": { "type": "integer" },
+        "triggerEffects": { "type": "array", "items": { "$ref": "#/$defs/effect" } }
+      }
+    },
+    "tokenDef": {
+      "type": "object",
+      "required": ["id", "pool"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "pool": { "type": "integer", "minimum": 0 },
+        "startPerPlayer": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "statDef": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "min": { "type": "integer", "default": 0 },
+        "max": { "type": "integer", "default": 3 }
+      }
+    },
+    "approachDef": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "requiresComplication": { "type": "boolean", "default": false }
+      }
+    },
+    "role": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "tricks": { "type": "array", "items": { "$ref": "#/$defs/trick" } }
+      }
+    },
+    "trick": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "trigger": { "type": "string" },
+        "uses": { "type": "string", "enum": ["once_per_room", "once_per_dungeon", "passive", "always"] },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "statModifier": {
+          "type": "object",
+          "properties": {
+            "stat": { "type": "string" },
+            "delta": { "type": "integer" }
+          }
+        },
+        "curedBy": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "useEffects": { "type": "array", "items": { "$ref": "#/$defs/effect" } }
+      }
+    },
+    "clues": {
+      "type": "object",
+      "properties": {
+        "core": { "type": "array", "items": { "$ref": "#/$defs/clue" } },
+        "bonus": { "type": "array", "items": { "$ref": "#/$defs/clue" } }
+      }
+    },
+    "clue": {
+      "type": "object",
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "pointsTo": {
+          "type": "object",
+          "properties": {
+            "suspect": { "type": "string" },
+            "location": { "type": "string" }
+          }
+        },
+        "isRedHerring": { "type": "boolean", "default": false }
+      }
+    },
+    "npc": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "scenes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/npcScene" } },
+        "reactions": { "type": "object", "additionalProperties": { "$ref": "#/$defs/npcScene" } },
+        "guiltyVariant": { "$ref": "#/$defs/npcVariant" },
+        "innocentVariant": { "$ref": "#/$defs/npcVariant" }
+      }
+    },
+    "npcScene": {
+      "type": "object",
+      "properties": {
+        "narrative": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } }
+      }
+    },
+    "npcVariant": {
+      "type": ["object", "null"],
+      "properties": {
+        "sceneOverrides": { "type": "object", "additionalProperties": { "$ref": "#/$defs/npcScene" } },
+        "reactionOverrides": { "type": "object", "additionalProperties": { "$ref": "#/$defs/npcScene" } }
+      }
+    },
+    "room": {
+      "type": "object",
+      "required": ["id", "name", "narrative"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "zone": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "narrative": { "type": "string" },
+        "narrativeVariants": { "type": "object", "additionalProperties": { "type": "string" } },
+        "footnotes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "marker": { "type": "string" },
+              "type": { "type": "string" },
+              "text": { "type": "string" }
+            }
+          }
+        },
+        "exits": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/exit" }
+        },
+        "choices": { "type": "array", "items": { "$ref": "#/$defs/choice" } },
+        "onEnter": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "clue": {
+          "type": ["object", "null"],
+          "properties": {
+            "type": { "type": "string", "enum": ["core", "bonus"] },
+            "pool": { "type": "array", "items": { "type": "string" } },
+            "instruction": { "type": "string" }
+          }
+        },
+        "items": {
+          "type": ["object", "null"],
+          "properties": {
+            "guaranteed": { "type": ["string", "null"] },
+            "draw": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "exit": {
+      "type": "object",
+      "required": ["target", "label"],
+      "properties": {
+        "target": { "type": "string" },
+        "label": { "type": "string" },
+        "requires": {
+          "type": ["object", "null"],
+          "properties": {
+            "stat": { "type": "string" },
+            "min": { "type": "integer" }
+          }
+        },
+        "requiresItem": { "type": ["string", "null"] }
+      }
+    },
+    "choice": {
+      "type": "object",
+      "required": ["id", "label", "target"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "verb": { "type": "string" },
+        "narrative": { "type": "string" },
+        "requires": {
+          "type": ["object", "null"],
+          "properties": { "stat": { "type": "string" }, "min": { "type": "integer" } }
+        },
+        "requiresItem": { "type": ["string", "null"] },
+        "target": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "conditionalNarrative": { "type": "object", "additionalProperties": { "type": "string" } },
+        "revealAfter": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "track", "token", "condition", "item",
+            "clue", "insight", "narrative", "goto",
+            "complication", "npc_reveal", "verb_reward",
+            "leader_flip", "rest"
+          ]
+        },
+        "track": { "type": "string" },
+        "token": { "type": "string" },
+        "delta": { "type": "integer" },
+        "target": { "type": "string" },
+        "condition": { "type": "string" },
+        "action": { "type": "string" },
+        "count": { "type": "integer" },
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "npc": { "type": "string" },
+        "info": { "type": "string" },
+        "size": { "type": "string", "enum": ["small", "large"] }
+      }
+    },
+    "complication": {
+      "type": "object",
+      "required": ["id", "name", "size", "narrative"],
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "size": { "type": "string", "enum": ["small", "large"] },
+        "narrative": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } }
+      }
+    },
+    "epilogue": {
+      "type": "object",
+      "required": ["id", "narrative"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["win", "loss"] },
+        "culprit": { "type": "string" },
+        "hideout": { "type": "string" },
+        "narrative": { "type": "string" },
+        "gagPayoffs": {
+          "type": "array",
+          "items": { "type": "object", "properties": { "gag": { "type": "string" }, "text": { "type": "string" } } }
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "combinations": { "type": "array", "items": { "$ref": "#/$defs/secretCombo" } }
+      }
+    },
+    "secretCombo": {
+      "type": "object",
+      "required": ["culprit", "hideout", "clueAssignments"],
+      "properties": {
+        "culprit": { "type": "string" },
+        "hideout": { "type": "string" },
+        "clueAssignments": { "type": "object", "additionalProperties": { "type": "string" } },
+        "roomOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "narrativeAppend": { "type": "string" },
+              "narrativeReplace": { "type": "string" }
+            }
+          }
+        },
+        "epilogue": { "type": "string" }
+      }
+    }
+  }
+}

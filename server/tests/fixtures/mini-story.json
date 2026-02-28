@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "title": "Test Adventure",
+    "author": "Test",
+    "version": "1.0",
+    "language": "en",
+    "playerCount": { "min": 1, "max": 4 },
+    "description": "A minimal test adventure"
+  },
+  "config": {
+    "tracks": [
+      { "id": "weather", "name": "Weather", "start": 6, "min": 0, "max": 8, "direction": "down", "triggerAt": 0, "triggerEffects": [{ "type": "narrative", "text": "The storm arrives!" }] },
+      { "id": "noise", "name": "Noise", "start": 0, "min": 0, "max": 6, "direction": "up", "triggerAt": 6, "triggerEffects": [{ "type": "narrative", "text": "The guard wakes up!" }] }
+    ],
+    "tokens": [
+      { "id": "mod", "name": "Courage", "pool": 5, "startPerPlayer": 1 },
+      { "id": "insight", "name": "Insight", "pool": 3, "startPerPlayer": 0 }
+    ],
+    "stats": [
+      { "id": "str", "name": "Strength", "min": 0, "max": 3 },
+      { "id": "per", "name": "Perception", "min": 0, "max": 3 },
+      { "id": "cha", "name": "Charm", "min": 0, "max": 3 },
+      { "id": "cun", "name": "Cunning", "min": 0, "max": 3 }
+    ],
+    "approaches": [
+      { "id": "brave", "name": "Brave", "effects": [{ "type": "token", "token": "mod", "delta": -1 }] },
+      { "id": "careful", "name": "Careful", "effects": [] },
+      { "id": "wild", "name": "Wild", "effects": [{ "type": "token", "token": "mod", "delta": 1 }], "requiresComplication": true }
+    ],
+    "startRoom": "hub",
+    "verbMenu": ["LOOK", "TALK", "USE", "TAKE", "PUSH"],
+    "lobby": {
+      "minPlayers": 1,
+      "maxPlayers": 4,
+      "roleSelection": "pick",
+      "autoStart": false
+    }
+  },
+  "strings": {
+    "choose_prompt": "Choose [1-{n}]:",
+    "also_here": "Also here:",
+    "press_any_key": "Press any key...",
+    "items_label": "Items:",
+    "conditions_label": "Conditions:"
+  },
+  "roles": [
+    { "id": "explorer", "name": "Explorer", "description": "Good at finding things", "tricks": [
+      { "id": "scout", "name": "Scout Ahead", "description": "Peek into next room", "trigger": "enter_room", "uses": "once_per_dungeon", "effects": [{ "type": "narrative", "text": "You scout ahead and spot danger." }] }
+    ]},
+    { "id": "thinker", "name": "Thinker", "description": "Good at puzzles", "tricks": [
+      { "id": "analyze", "name": "Analyze", "description": "Study the room", "trigger": "manual", "uses": "once_per_room", "effects": [{ "type": "token", "token": "insight", "delta": 1 }] }
+    ]},
+    { "id": "helper", "name": "Helper", "description": "Good at teamwork", "tricks": [
+      { "id": "encourage", "name": "Encourage", "description": "Boost a friend", "trigger": "manual", "uses": "once_per_room", "effects": [{ "type": "token", "token": "mod", "delta": 1 }] }
+    ]},
+    { "id": "sneaker", "name": "Sneaker", "description": "Good at stealth", "tricks": [
+      { "id": "sneak", "name": "Sneak Past", "description": "Avoid making noise", "trigger": "manual", "uses": "once_per_room", "effects": [{ "type": "track", "track": "noise", "delta": -1 }] }
+    ]}
+  ],
+  "conditions": [
+    { "id": "frozen", "name": "Frozen", "statModifier": { "stat": "str", "delta": -1 }, "curedBy": ["rest", "item:torch"] },
+    { "id": "blinded", "name": "Blinded", "statModifier": { "stat": "per", "delta": -1 }, "curedBy": ["rest"] },
+    { "id": "scared", "name": "Scared", "statModifier": { "stat": "cha", "delta": -1 }, "curedBy": ["rest", "item:amulet"] }
+  ],
+  "items": [
+    { "id": "torch", "name": "Torch", "description": "A lit torch", "tags": ["light", "fire"], "useEffects": [{ "type": "condition", "condition": "frozen", "action": "remove", "target": "self" }] },
+    { "id": "rope", "name": "Rope", "description": "A sturdy rope", "tags": ["climb"], "useEffects": [] },
+    { "id": "key", "name": "Old Key", "description": "A rusty key", "tags": ["unlock"], "useEffects": [] },
+    { "id": "map", "name": "Old Map", "description": "A faded map", "tags": ["navigate"], "useEffects": [{ "type": "token", "token": "insight", "delta": 1 }] },
+    { "id": "amulet", "name": "Amulet", "description": "A glowing amulet", "tags": ["magic"], "useEffects": [{ "type": "condition", "condition": "scared", "action": "remove", "target": "self" }] },
+    { "id": "shield", "name": "Shield", "description": "A wooden shield", "tags": ["defend"], "useEffects": [] }
+  ],
+  "clues": {
+    "core": [
+      { "id": "K1", "text": "Footprints lead east", "pointsTo": { "suspect": "goblin", "location": "dungeon_a" } },
+      { "id": "K2", "text": "Green scales on the floor", "pointsTo": { "suspect": "goblin", "location": "dungeon_a" } },
+      { "id": "K3", "text": "A shadow flew north", "pointsTo": { "suspect": "raven", "location": "dungeon_b" } },
+      { "id": "K4", "text": "Black feathers everywhere", "pointsTo": { "suspect": "raven", "location": "dungeon_b" } },
+      { "id": "K5", "text": "Tiny claw marks on the lock", "pointsTo": { "suspect": "goblin", "location": "dungeon_b" } },
+      { "id": "K6", "text": "A nest of stolen trinkets", "pointsTo": { "suspect": "raven", "location": "dungeon_a" } }
+    ],
+    "bonus": [
+      { "id": "B1", "text": "The goblin was seen near the mine", "pointsTo": { "suspect": "goblin", "location": "dungeon_a" } },
+      { "id": "B2", "text": "The raven nests in high places", "pointsTo": { "suspect": "raven", "location": "dungeon_b" } }
+    ]
+  },
+  "npcs": [
+    {
+      "id": "elder", "name": "Elder Oak", "role": "quest_giver",
+      "scenes": {
+        "hub_visit_1": { "narrative": "The Elder greets you warmly.", "effects": [] },
+        "hub_visit_2": { "narrative": "The Elder looks worried.", "effects": [{ "type": "token", "token": "insight", "delta": 1 }] }
+      },
+      "reactions": {},
+      "guiltyVariant": null,
+      "innocentVariant": null
+    },
+    {
+      "id": "goblin", "name": "Grix the Goblin", "role": "suspect",
+      "scenes": {
+        "hub_visit_1": { "narrative": "Grix fidgets nervously.", "effects": [] },
+        "hub_visit_2": { "narrative": "Grix avoids eye contact.", "effects": [] }
+      },
+      "reactions": { "accused": { "narrative": "Grix protests loudly!", "effects": [] } },
+      "guiltyVariant": {
+        "sceneOverrides": {
+          "hub_visit_1": { "narrative": "Grix sweats and stammers.", "effects": [{ "type": "track", "track": "noise", "delta": 1 }] }
+        }
+      },
+      "innocentVariant": {
+        "sceneOverrides": {
+          "hub_visit_1": { "narrative": "Grix waves cheerfully.", "effects": [] }
+        }
+      }
+    },
+    {
+      "id": "raven", "name": "Shadow the Raven", "role": "suspect",
+      "scenes": {
+        "hub_visit_1": { "narrative": "The raven watches silently.", "effects": [] },
+        "hub_visit_2": { "narrative": "The raven caws mysteriously.", "effects": [] }
+      },
+      "reactions": {},
+      "guiltyVariant": {
+        "sceneOverrides": {
+          "hub_visit_1": { "narrative": "The raven shifts uneasily on its perch.", "effects": [] }
+        }
+      },
+      "innocentVariant": {
+        "sceneOverrides": {
+          "hub_visit_1": { "narrative": "The raven preens calmly.", "effects": [] }
+        }
+      }
+    }
+  ],
+  "rooms": {
+    "hub": {
+      "id": "hub", "name": "The Village Square", "zone": "hub",
+      "tags": ["hub", "safe"],
+      "narrative": "You stand in the village square. Paths lead in all directions.",
+      "exits": [
+        { "target": "mine_entrance", "label": "Go to the old mine" },
+        { "target": "tower_base", "label": "Go to the tower" }
+      ],
+      "choices": [
+        { "id": "hub_rest", "label": "Rest at the inn", "verb": "USE", "narrative": "You rest and recover.", "requires": null, "target": "hub", "effects": [{ "type": "rest" }] },
+        { "id": "hub_finale", "label": "Solve the mystery", "verb": "TALK", "narrative": "Time to solve this!", "requires": null, "target": "finale", "effects": [], "revealAfter": ["clue:4"] }
+      ],
+      "onEnter": [],
+      "clue": null,
+      "items": null
+    },
+    "mine_entrance": {
+      "id": "mine_entrance", "name": "Mine Entrance", "zone": "dungeon_a",
+      "tags": ["entrance"],
+      "narrative": "A dark mine shaft stretches before you.",
+      "exits": [
+        { "target": "mine_deep", "label": "Go deeper" },
+        { "target": "hub", "label": "Go back to village" }
+      ],
+      "choices": [
+        { "id": "mine_look", "label": "Search the entrance", "verb": "LOOK", "narrative": "You find scratch marks on the walls.", "requires": null, "target": "mine_entrance", "effects": [{ "type": "track", "track": "weather", "delta": -1 }] },
+        { "id": "mine_enter", "label": "Venture deeper", "verb": "PUSH", "narrative": "You push forward into darkness.", "requires": { "stat": "str", "min": 1 }, "target": "mine_deep", "effects": [{ "type": "track", "track": "noise", "delta": 1 }] }
+      ],
+      "onEnter": [{ "type": "narrative", "text": "The air grows cold as you enter." }],
+      "clue": { "type": "core", "pool": ["K1", "K2", "K5"], "instruction": "Search the area" },
+      "items": { "guaranteed": null, "draw": 1 }
+    },
+    "mine_deep": {
+      "id": "mine_deep", "name": "Deep Mine", "zone": "dungeon_a",
+      "tags": [],
+      "narrative": "You are deep underground. Gems glitter in the walls.",
+      "exits": [
+        { "target": "mine_entrance", "label": "Go back to entrance" },
+        { "target": "hub", "label": "Leave the mine" }
+      ],
+      "choices": [
+        { "id": "deep_dig", "label": "Dig through rubble", "verb": "PUSH", "narrative": "You clear a path through the rocks.", "requires": { "stat": "str", "min": 2 }, "target": "mine_deep", "effects": [{ "type": "track", "track": "noise", "delta": 1 }, { "type": "item", "action": "add", "id": "key" }] },
+        { "id": "deep_listen", "label": "Listen carefully", "verb": "LOOK", "narrative": "You hear dripping water.", "requires": { "stat": "per", "min": 1 }, "target": "mine_deep", "effects": [] }
+      ],
+      "onEnter": [{ "type": "track", "track": "weather", "delta": -1 }],
+      "clue": { "type": "core", "pool": ["K1", "K2"], "instruction": "Look around" },
+      "items": { "guaranteed": "torch", "draw": 0 }
+    },
+    "tower_base": {
+      "id": "tower_base", "name": "Tower Base", "zone": "dungeon_b",
+      "tags": ["entrance"],
+      "narrative": "A crumbling tower rises above you.",
+      "exits": [
+        { "target": "tower_top", "label": "Climb to the top" },
+        { "target": "hub", "label": "Go back to village" }
+      ],
+      "choices": [
+        { "id": "tower_climb", "label": "Scale the wall", "verb": "PUSH", "narrative": "You climb the ancient stones.", "requires": { "stat": "str", "min": 1 }, "requiresItem": "rope", "target": "tower_top", "effects": [{ "type": "track", "track": "noise", "delta": 1 }] },
+        { "id": "tower_search", "label": "Search the base", "verb": "LOOK", "narrative": "You find something hidden.", "requires": null, "target": "tower_base", "effects": [] }
+      ],
+      "onEnter": [],
+      "clue": { "type": "core", "pool": ["K3", "K4", "K6"], "instruction": "Investigate the tower" },
+      "items": { "guaranteed": null, "draw": 1 }
+    },
+    "tower_top": {
+      "id": "tower_top", "name": "Tower Top", "zone": "dungeon_b",
+      "tags": [],
+      "narrative": "Wind howls at the top of the tower. You can see the whole valley.",
+      "exits": [
+        { "target": "tower_base", "label": "Climb back down" },
+        { "target": "hub", "label": "Return to village" }
+      ],
+      "choices": [
+        { "id": "top_look", "label": "Survey the valley", "verb": "LOOK", "narrative": "You spot movement in the distance.", "requires": { "stat": "per", "min": 2 }, "target": "tower_top", "effects": [{ "type": "token", "token": "insight", "delta": 1 }] },
+        { "id": "top_shout", "label": "Shout for help", "verb": "TALK", "narrative": "Your voice echoes.", "requires": null, "target": "tower_top", "effects": [{ "type": "track", "track": "noise", "delta": 2 }] }
+      ],
+      "onEnter": [{ "type": "condition", "condition": "frozen", "action": "add", "target": "self" }],
+      "clue": { "type": "bonus", "pool": ["B1", "B2"], "instruction": "Look for signs" },
+      "items": null
+    },
+    "finale": {
+      "id": "finale", "name": "The Gathering", "zone": "hub",
+      "tags": ["finale"],
+      "narrative": "Everyone gathers to hear your conclusion.",
+      "exits": [],
+      "choices": [],
+      "onEnter": [],
+      "clue": null,
+      "items": null
+    }
+  },
+  "complications": [
+    { "id": 1, "name": "Loose rocks", "size": "small", "narrative": "Rocks tumble from above!", "effects": [{ "type": "track", "track": "noise", "delta": 1 }] },
+    { "id": 2, "name": "Sudden wind", "size": "small", "narrative": "A gust of wind chills you.", "effects": [{ "type": "condition", "condition": "frozen", "action": "add", "target": "self" }] },
+    { "id": 3, "name": "Cave-in", "size": "large", "narrative": "The passage collapses!", "effects": [{ "type": "track", "track": "noise", "delta": 2 }, { "type": "track", "track": "weather", "delta": -1 }] },
+    { "id": 4, "name": "Shadow figure", "size": "large", "narrative": "A dark shape frightens you!", "effects": [{ "type": "condition", "condition": "scared", "action": "add", "target": "self" }] }
+  ],
+  "epilogues": {
+    "win_goblin_a": { "id": "win_goblin_a", "type": "win", "culprit": "goblin", "hideout": "dungeon_a", "narrative": "You found Grix hiding in the mine! The treasure is returned." },
+    "win_goblin_b": { "id": "win_goblin_b", "type": "win", "culprit": "goblin", "hideout": "dungeon_b", "narrative": "You found Grix at the tower! Surprising hiding spot." },
+    "win_raven_a": { "id": "win_raven_a", "type": "win", "culprit": "raven", "hideout": "dungeon_a", "narrative": "Shadow had a nest deep in the mine!" },
+    "win_raven_b": { "id": "win_raven_b", "type": "win", "culprit": "raven", "hideout": "dungeon_b", "narrative": "Shadow was nesting at the top of the tower!" },
+    "loss": { "id": "loss", "type": "loss", "narrative": "The mystery remains unsolved. Perhaps next time..." }
+  },
+  "secrets": {
+    "combinations": [
+      {
+        "culprit": "goblin",
+        "hideout": "dungeon_a",
+        "clueAssignments": {
+          "mine_entrance": "K1",
+          "mine_deep": "K2",
+          "tower_base": "K6",
+          "tower_top": "B1"
+        },
+        "roomOverrides": {
+          "mine_deep": { "narrativeAppend": " You notice green scales on the floor." }
+        },
+        "epilogue": "win_goblin_a"
+      },
+      {
+        "culprit": "raven",
+        "hideout": "dungeon_b",
+        "clueAssignments": {
+          "mine_entrance": "K5",
+          "mine_deep": "K1",
+          "tower_base": "K3",
+          "tower_top": "B2"
+        },
+        "roomOverrides": {
+          "tower_top": { "narrativeAppend": " Black feathers litter the floor." }
+        },
+        "epilogue": "win_raven_b"
+      }
+    ]
+  }
+}
